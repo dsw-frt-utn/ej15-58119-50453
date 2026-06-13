@@ -1,4 +1,4 @@
-namespace Dsw2026Ej15;
+namespace Dsw2026Ej15.Api;
 
 public class WeatherForecast
 {
