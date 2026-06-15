@@ -43,7 +43,7 @@ namespace Dsw2026Ej15.Data
 
         private void LoadSpecialities()
         {
-            var especDatos = CargarDatosDeArchivos<SpecialityDtos>("spcecialities");
+            var especDatos = CargarDatosDeArchivos<SpecialityDtos>("specialities");
             if (especDatos != null)
             {
                 foreach(var dato in especDatos)
@@ -67,7 +67,7 @@ namespace Dsw2026Ej15.Data
 
         public Doctor? GetDoctor(Guid id)
         {
-            return Doctores.Find(d => (d.Id == id && d.IsActive is true));
+            return Doctores.Find(d => (d.Id == id && d.IsActive));
         }
         public bool AgregarDoctor(Doctor doc)
         {
