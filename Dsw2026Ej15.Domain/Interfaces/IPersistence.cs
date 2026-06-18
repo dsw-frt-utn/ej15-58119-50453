@@ -11,5 +11,7 @@ namespace Dsw2026Ej15.Domain.Interfaces
         public Doctor? GetDoctor(Guid id);
         public bool AgregarDoctor(Doctor doc);
 
+        public bool ActualizarDoctor(Doctor doc);
+        public Speciality? GetEspecialidad(Guid id);
     }
 }

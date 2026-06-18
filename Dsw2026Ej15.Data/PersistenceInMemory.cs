@@ -3,6 +3,7 @@ using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using System.Text.Json;
 
@@ -20,19 +21,19 @@ namespace Dsw2026Ej15.Data
 
         public void LoadData()
         {
-            LoadDoctors();
             LoadSpecialities();
+            LoadDoctors();
         }
 
         private void LoadDoctors()
         {
             var doctoresDatos = CargarDatosDeArchivos<DoctorDtos>("doctors");
-            if(doctoresDatos != null)
+            if (doctoresDatos != null)
             {
-                foreach(var dato in doctoresDatos)
+                foreach (var dato in doctoresDatos)
                 {
-                    var speciality = Especialidades.Find(s => s.Id == dato.SpecialityId);
-                    if(speciality != null)
+                    var speciality = GetEspecialidad(dato.SpecialityId);
+                    if (speciality != null)
                     {
                         Doctor doc = new Doctor(dato.Id, dato.Name, dato.LicenseNumber, dato.IsActive, speciality);
                         Doctores.Add(doc);
@@ -46,7 +47,7 @@ namespace Dsw2026Ej15.Data
             var especDatos = CargarDatosDeArchivos<SpecialityDtos>("specialities");
             if (especDatos != null)
             {
-                foreach(var dato in especDatos)
+                foreach (var dato in especDatos)
                 {
                     Speciality speciality = new Speciality(dato.Id, dato.Name, dato.Description);
                     Especialidades.Add(speciality);
@@ -67,7 +68,7 @@ namespace Dsw2026Ej15.Data
 
         public Doctor? GetDoctor(Guid id)
         {
-            return Doctores.Find(d => (d.Id == id && d.IsActive));
+            return Doctores.Find(d => d.Id == id);
         }
         public bool AgregarDoctor(Doctor doc)
         {
@@ -81,6 +82,24 @@ namespace Dsw2026Ej15.Data
                 return false;
             }
         }
-        
+
+        public bool ActualizarDoctor(Doctor doctor)
+        {
+            var doctorGuardado = GetDoctor(doctor.Id);
+
+            if (doctorGuardado is null)
+            {
+                return false;
+            }
+
+            doctorGuardado.Actualizar(doctor);
+
+            return true;
+        }
+
+        public Speciality? GetEspecialidad(Guid id)
+        {
+            return Especialidades.FirstOrDefault(d => d.Id == id);
+        }
     }
 }
