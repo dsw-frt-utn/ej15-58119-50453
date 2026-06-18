@@ -15,4 +15,31 @@ public class Doctor : BaseEntity
         Speciality = speciality;
         Id = id;
     }
+
+    public void Actualizar(Doctor doctor)
+    {
+        Name = doctor.Name;
+        LicenseNumber = doctor.LicenseNumber;
+        IsActive = doctor.IsActive;
+        Speciality = doctor.Speciality;
+        Id = doctor.Id;
+    }
+
+    public void ActualizarParcial(string? name = null, string? licenseNumber = null, bool? isActive = null)
+    {
+        if (isActive is not null)
+        {
+            IsActive = (bool) isActive;
+        }
+
+        if (licenseNumber is not null)
+        {
+            LicenseNumber = licenseNumber;
+        }
+
+        if (name is not null)
+        {
+            Name = name;
+        }
+    }
 }
