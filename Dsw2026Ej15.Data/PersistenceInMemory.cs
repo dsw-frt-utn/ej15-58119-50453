@@ -11,8 +11,8 @@ namespace Dsw2026Ej15.Data
 {
     public class PersistenceInMemory : IPersistence
     {
-        private readonly List<Doctor> Doctores = [];
-        private readonly List<Speciality> Especialidades = [];
+        private List<Doctor> _doctors = [];
+        private List<Speciality> _specialities = [];
 
         public PersistenceInMemory()
         {
@@ -32,11 +32,11 @@ namespace Dsw2026Ej15.Data
             {
                 foreach (var dato in doctoresDatos)
                 {
-                    var speciality = GetEspecialidad(dato.SpecialityId);
+                    var speciality = GetSpeciality(dato.SpecialityId);
                     if (speciality != null)
                     {
                         Doctor doc = new Doctor(dato.Id, dato.Name, dato.LicenseNumber, dato.IsActive, speciality);
-                        Doctores.Add(doc);
+                        _doctors.Add(doc);
                     }
                 }
             }
@@ -44,40 +44,45 @@ namespace Dsw2026Ej15.Data
 
         private void LoadSpecialities()
         {
-            var especDatos = CargarDatosDeArchivos<SpecialityDtos>("specialities");
-            if (especDatos != null)
+            try
             {
-                foreach (var dato in especDatos)
-                {
-                    Speciality speciality = new Speciality(dato.Id, dato.Name, dato.Description);
-                    Especialidades.Add(speciality);
-                }
+                var especDatos = CargarDatosDeArchivos<SpecialityDtos>("specialities");
+                _specialities = [.. especDatos.Select(s=>new Speciality(s.Id,s.Name,s.Description))];
             }
+            catch(Exception)
+            {
+
+            }
+            
         }
         private List<T>? CargarDatosDeArchivos<T>(string file)
         {
             string jsonpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources", $"{file}.json");
             string jsoncontent = File.ReadAllText(jsonpath);
-            return JsonSerializer.Deserialize<List<T>>(jsoncontent);
+            return JsonSerializer.Deserialize<List<T>>(jsoncontent, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) ?? [];
         }
 
-        public List<Doctor> GetDoctores()
+        public List<Doctor> GetDoctors()
         {
-            return Doctores;
+            return _doctors;
         }
 
         public Doctor? GetDoctor(Guid id)
         {
-            return Doctores.Find(d => d.Id == id);
+            return _doctors.Find(d => d.Id == id);
         }
         public bool AgregarDoctor(Doctor doc)
         {
             try
             {
-                Doctores.Add(doc);
+                if(_doctors.Find(d => d.LicenseNumber == doc.LicenseNumber) is not null)
+                {
+                    throw new Exception();
+                }
+                _doctors.Add(doc);
                 return true;
             }
-            catch
+            catch(Exception)
             {
                 return false;
             }
@@ -97,9 +102,9 @@ namespace Dsw2026Ej15.Data
             return true;
         }
 
-        public Speciality? GetEspecialidad(Guid id)
+        public Speciality? GetSpeciality(Guid id)
         {
-            return Especialidades.FirstOrDefault(d => d.Id == id);
+            return _specialities.FirstOrDefault(d => d.Id == id);
         }
     }
 }

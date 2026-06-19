@@ -1,5 +1,6 @@
-using Dsw2026Ej15.Api.Dtos;
+using Dsw2026Ej15.Api.DTOs;
 using Dsw2026Ej15.Domain.Entities;
+using Dsw2026Ej15.Domain.Exceptions;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,36 +19,38 @@ public class DoctorsController : ControllerBase
 
     [HttpPost]
 
-    public IActionResult AddDoctor(AddDoctorDTO values)
+    public async Task<IActionResult> AddDoctor(DoctorDTO.Request request)
     {
-        var especialidad = Persistence.GetEspecialidad(values.specialityId);
-
-        if (especialidad is null)
+        
+        if(string.IsNullOrWhiteSpace(request.LicenseNumber) || string.IsNullOrWhiteSpace(request.Name))
         {
-            return BadRequest(new { message = "El ID de especialidad es incorrecto." });
+            throw new ValidationException("El nombre y/o la matricula estan vacios");
         }
+        
+        var especialidad = Persistence.GetSpeciality(request.SpecialityId) ?? throw new ValidationException("El ID de especialidad es incorrecto.");
 
-        var resultado = Persistence.AgregarDoctor(new Doctor(Guid.NewGuid(), values.name, values.licenseNumber, true, especialidad));
+
+        var resultado = Persistence.AgregarDoctor(new Doctor(Guid.NewGuid(), request.Name, request.LicenseNumber, true, especialidad));
 
         if (!resultado)
         {
-            return BadRequest(new { message = "No se pudo agregar al doctor." });
+            throw new Exception("No se pudo agregar al doctor.");
         }
 
         return Created();
     }
 
     [HttpGet]
-    public IActionResult GetDoctors()
+    public async Task<IActionResult> GetDoctors()
     {
-        var doctors = Persistence.GetDoctores();
+        var doctors = Persistence.GetDoctors();
         var doctoresActivos = doctors.Where(doctor => doctor.IsActive);
 
         return Ok(doctoresActivos);
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetDoctor(Guid id)
+    public async Task<IActionResult> GetDoctor(Guid id)
     {
         var doctor = Persistence.GetDoctor(id);
 
@@ -56,11 +59,11 @@ public class DoctorsController : ControllerBase
             return NotFound();
         }
 
-        return Ok(new DoctorResponseDTO(doctor.Name, doctor.LicenseNumber, doctor.Speciality.Name));
+        return Ok(new DoctorDTO.Response(doctor.Name, doctor.LicenseNumber, doctor.Speciality.Name));
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteDoctor(Guid id)
+    public async Task<IActionResult> DeleteDoctor(Guid id)
     {
         var doctor = Persistence.GetDoctor(id);
 
