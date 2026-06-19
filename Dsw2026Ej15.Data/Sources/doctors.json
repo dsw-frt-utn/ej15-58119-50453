@@ -1,0 +1,72 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "name": "Dr. Juan Pérez",
+    "licenseNumber": "MED-789456",
+    "isActive": true,
+    "specialityId": "8a1f3b78-3f66-4d68-8d6e-1c5b9c7a2f41"
+  },
+  {
+    "id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+    "name": "Dra. María Gómez",
+    "licenseNumber": "MED-123789",
+    "isActive": true,
+    "specialityId": "f4d2c9a1-7b3e-4f8d-9c61-2e7a5d8b3c12"
+  },
+  {
+    "id": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+    "name": "Dr. Luis Rodríguez",
+    "licenseNumber": "MED-456123",
+    "isActive": false,
+    "specialityId": "c7e8d4b2-5f91-4a37-b8d4-9e2c6f1a7b53"
+  },
+  {
+    "id": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+    "name": "Dra. Ana Martínez",
+    "licenseNumber": "MED-987654",
+    "isActive": true,
+    "specialityId": "1b9c5d7e-8a42-4f63-9d8e-3c7a1f5b2e64"
+  },
+  {
+    "id": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+    "name": "Dr. Carlos López",
+    "licenseNumber": "MED-321654",
+    "isActive": true,
+    "specialityId": "5e2a8c1d-4b73-4d96-a1f5-7c9b2e6d8a75"
+  },
+  {
+    "id": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+    "name": "Dra. Sofía Fernández",
+    "licenseNumber": "MED-654987",
+    "isActive": true,
+    "specialityId": "9d4f1a7b-2c85-4e31-b6d7-5a8c3f2e9b86"
+  },
+  {
+    "id": "a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d",
+    "name": "Dr. Jorge Silva",
+    "licenseNumber": "MED-159753",
+    "isActive": true,
+    "specialityId": "2f7b6c1a-9d34-4a85-b7e2-8c5d1f9a3b97"
+  },
+  {
+    "id": "b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e",
+    "name": "Dra. Elena Castro",
+    "licenseNumber": "MED-357159",
+    "isActive": false,
+    "specialityId": "7c3d8e5a-1f62-4b94-a9d3-6e2b7c1f4a08"
+  },
+  {
+    "id": "c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3f",
+    "name": "Dr. Martín Ruiz",
+    "licenseNumber": "MED-852456",
+    "isActive": true,
+    "specialityId": "4a6e2b9c-8d15-4f73-b1c8-9e7a3d5f2b19"
+  },
+  {
+    "id": "d0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4a",
+    "name": "Dra. Lucía Torres",
+    "licenseNumber": "MED-753159",
+    "isActive": true,
+    "specialityId": "6b1f9d3a-5c47-4e82-a7d5-2f8c6b1e3a20"
+  }
+]
