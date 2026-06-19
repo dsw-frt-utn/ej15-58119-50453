@@ -1,10 +1,6 @@
 ﻿using Dsw2026Ej15.Data.Dtos;
 using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
 using System.Text.Json;
 
 namespace Dsw2026Ej15.Data
@@ -27,19 +23,27 @@ namespace Dsw2026Ej15.Data
 
         private void LoadDoctors()
         {
-            var doctoresDatos = CargarDatosDeArchivos<DoctorDtos>("doctors");
-            if (doctoresDatos != null)
+            try
             {
-                foreach (var dato in doctoresDatos)
+                var doctoresDatos = CargarDatosDeArchivos<DoctorDtos>("doctors");
+                if (doctoresDatos != null)
                 {
-                    var speciality = GetSpeciality(dato.SpecialityId);
-                    if (speciality != null)
+                    foreach (var dato in doctoresDatos)
                     {
-                        Doctor doc = new Doctor(dato.Id, dato.Name, dato.LicenseNumber, dato.IsActive, speciality);
-                        _doctors.Add(doc);
+                        var speciality = GetSpeciality(dato.SpecialityId);
+                        if (speciality != null)
+                        {
+                            Doctor doc = new Doctor(dato.Id, dato.Name, dato.LicenseNumber, dato.IsActive, speciality);
+                            _doctors.Add(doc);
+                        }
                     }
                 }
             }
+            catch
+            {
+                throw new Exception("Ocurrio un error al cargar los medicos.");
+            }
+
         }
 
         private void LoadSpecialities()
@@ -47,13 +51,13 @@ namespace Dsw2026Ej15.Data
             try
             {
                 var especDatos = CargarDatosDeArchivos<SpecialityDtos>("specialities");
-                _specialities = [.. especDatos.Select(s=>new Speciality(s.Id,s.Name,s.Description))];
+                _specialities = [.. especDatos?.Select(speciality => new Speciality(speciality.Id, speciality.Name, speciality.Description)) ?? []];
             }
-            catch(Exception)
+            catch
             {
-
+                throw new Exception("Ocurrio un error al cargar las especialidades.");
             }
-            
+
         }
         private List<T>? CargarDatosDeArchivos<T>(string file)
         {
@@ -71,18 +75,15 @@ namespace Dsw2026Ej15.Data
         {
             return _doctors.Find(d => d.Id == id);
         }
+
         public bool AgregarDoctor(Doctor doc)
         {
             try
             {
-                if(_doctors.Find(d => d.LicenseNumber == doc.LicenseNumber) is not null)
-                {
-                    throw new Exception();
-                }
                 _doctors.Add(doc);
                 return true;
             }
-            catch(Exception)
+            catch
             {
                 return false;
             }
@@ -105,6 +106,11 @@ namespace Dsw2026Ej15.Data
         public Speciality? GetSpeciality(Guid id)
         {
             return _specialities.FirstOrDefault(d => d.Id == id);
+        }
+
+        public Doctor? GetDoctorByLicenseNumber(string licenseNumber)
+        {
+            return _doctors.Find(doctor => doctor.LicenseNumber == licenseNumber);
         }
     }
 }

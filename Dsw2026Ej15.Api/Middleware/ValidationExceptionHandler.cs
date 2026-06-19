@@ -6,23 +6,41 @@ namespace Dsw2026Ej15.Api.Middleware
 {
     public class ValidationExceptionHandler : IExceptionHandler
     {
-        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
-            if(exception is ValidationException validation)
+            ProblemDetails details;
+
+            if (exception is ValidationException validation)
             {
-                var details = new ProblemDetails
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                details = new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
                     Title = "Bad Request",
                     Detail = validation.Message,
                     Instance = httpContext.Request.Path
                 };
-
-                await httpContext.Response.WriteAsJsonAsync(details, cancellationToken);
-                return true;
             }
-            
-            return false;
+            else
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                details = new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Internal Server Error",
+                    Detail = exception.Message ?? "Ocurrió un error inesperado.",
+                    Instance = httpContext.Request.Path
+                };
+            }
+
+            await httpContext.Response.WriteAsJsonAsync(details, cancellationToken);
+
+            return true;
         }
     }
 }

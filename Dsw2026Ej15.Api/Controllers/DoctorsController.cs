@@ -21,14 +21,17 @@ public class DoctorsController : ControllerBase
 
     public async Task<IActionResult> AddDoctor(DoctorDTO.Request request)
     {
-        
-        if(string.IsNullOrWhiteSpace(request.LicenseNumber) || string.IsNullOrWhiteSpace(request.Name))
+        if (string.IsNullOrWhiteSpace(request.LicenseNumber) || string.IsNullOrWhiteSpace(request.Name))
         {
-            throw new ValidationException("El nombre y/o la matricula estan vacios");
+            throw new ValidationException("El nombre y/o la matricula estan vacios.");
         }
-        
-        var especialidad = Persistence.GetSpeciality(request.SpecialityId) ?? throw new ValidationException("El ID de especialidad es incorrecto.");
 
+        if (Persistence.GetDoctorByLicenseNumber(request.LicenseNumber) is not null)
+        {
+            throw new ValidationException("La matricula pertenece a otro doctor.");
+        }
+
+        var especialidad = Persistence.GetSpeciality(request.SpecialityId) ?? throw new ValidationException("El ID de especialidad es incorrecto.");
 
         var resultado = Persistence.AgregarDoctor(new Doctor(Guid.NewGuid(), request.Name, request.LicenseNumber, true, especialidad));
 
