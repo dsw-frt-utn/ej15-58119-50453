@@ -5,6 +5,10 @@ public class Speciality : BaseEntity
     public string Name { get; private set; }
     public string Description { get; private set; }
 
+    private Speciality()
+    {
+
+    }
     public Speciality(Guid id, string name, string description)
     {
         Name = name;
