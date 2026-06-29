@@ -26,14 +26,14 @@ public class DoctorsController : ControllerBase
             throw new ValidationException("El nombre y/o la matricula estan vacios.");
         }
 
-        if (Persistence.GetDoctorByLicenseNumber(request.LicenseNumber) is not null)
+        if (await Persistence.GetDoctorByLicenseNumber(request.LicenseNumber) is not null)
         {
             throw new ValidationException("La matricula pertenece a otro doctor.");
         }
 
-        var especialidad = Persistence.GetSpeciality(request.SpecialityId) ?? throw new ValidationException("El ID de especialidad es incorrecto.");
+        var especialidad = await Persistence.GetSpeciality(request.SpecialityId) ?? throw new ValidationException("El ID de especialidad es incorrecto.");
 
-        var resultado = Persistence.AgregarDoctor(new Doctor(Guid.NewGuid(), request.Name, request.LicenseNumber, true, especialidad));
+        var resultado = await Persistence.AgregarDoctor(new Doctor(Guid.NewGuid(), request.Name, request.LicenseNumber, true, especialidad));
 
         if (!resultado)
         {
@@ -46,16 +46,15 @@ public class DoctorsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDoctors()
     {
-        var doctors = Persistence.GetDoctors();
-        var doctoresActivos = doctors.Where(doctor => doctor.IsActive);
+        var doctors = await Persistence.GetDoctors();
 
-        return Ok(doctoresActivos);
+        return Ok(doctors);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDoctor(Guid id)
     {
-        var doctor = Persistence.GetDoctor(id);
+        var doctor = await Persistence.GetDoctor(id);
 
         if (doctor == null || !doctor.IsActive)
         {
@@ -68,7 +67,7 @@ public class DoctorsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDoctor(Guid id)
     {
-        var doctor = Persistence.GetDoctor(id);
+        var doctor = await Persistence.GetDoctor(id);
 
         if (doctor == null || !doctor.IsActive)
         {
@@ -77,7 +76,7 @@ public class DoctorsController : ControllerBase
 
         doctor.ActualizarParcial(isActive: false);
 
-        Persistence.ActualizarDoctor(doctor);
+        await Persistence.ActualizarDoctor(doctor);
 
         return NoContent();
     }

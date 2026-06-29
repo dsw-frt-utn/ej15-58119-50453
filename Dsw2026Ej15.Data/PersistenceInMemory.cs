@@ -15,13 +15,13 @@ namespace Dsw2026Ej15.Data
             LoadData();
         }
 
-        public void LoadData()
+        public async Task LoadData()
         {
             LoadSpecialities();
-            LoadDoctors();
+            await LoadDoctors();
         }
 
-        private void LoadDoctors()
+        private async Task LoadDoctors()
         {
             try
             {
@@ -30,7 +30,7 @@ namespace Dsw2026Ej15.Data
                 {
                     foreach (var dato in doctoresDatos)
                     {
-                        var speciality = GetSpeciality(dato.SpecialityId);
+                        var speciality = await GetSpeciality(dato.SpecialityId);
                         if (speciality != null)
                         {
                             Doctor doc = new Doctor(dato.Id, dato.Name, dato.LicenseNumber, dato.IsActive, speciality);
@@ -66,17 +66,17 @@ namespace Dsw2026Ej15.Data
             return JsonSerializer.Deserialize<List<T>>(jsoncontent, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) ?? [];
         }
 
-        public List<Doctor> GetDoctors()
+        public async Task<IEnumerable<Doctor>> GetDoctors()
         {
             return _doctors;
         }
 
-        public Doctor? GetDoctor(Guid id)
+        public async Task<Doctor?> GetDoctor(Guid id)
         {
             return _doctors.Find(d => d.Id == id);
         }
 
-        public bool AgregarDoctor(Doctor doc)
+        public async Task<bool> AgregarDoctor(Doctor doc)
         {
             try
             {
@@ -89,9 +89,9 @@ namespace Dsw2026Ej15.Data
             }
         }
 
-        public bool ActualizarDoctor(Doctor doctor)
+        public async Task<bool> ActualizarDoctor(Doctor doctor)
         {
-            var doctorGuardado = GetDoctor(doctor.Id);
+            var doctorGuardado = await GetDoctor(doctor.Id);
 
             if (doctorGuardado is null)
             {
@@ -103,12 +103,12 @@ namespace Dsw2026Ej15.Data
             return true;
         }
 
-        public Speciality? GetSpeciality(Guid id)
+        public async Task<Speciality?> GetSpeciality(Guid id)
         {
             return _specialities.FirstOrDefault(d => d.Id == id);
         }
 
-        public Doctor? GetDoctorByLicenseNumber(string licenseNumber)
+        public async Task<Doctor?> GetDoctorByLicenseNumber(string licenseNumber)
         {
             return _doctors.Find(doctor => doctor.LicenseNumber == licenseNumber);
         }

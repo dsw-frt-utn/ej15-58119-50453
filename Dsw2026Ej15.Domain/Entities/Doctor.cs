@@ -5,7 +5,10 @@ public class Doctor : BaseEntity
     public string Name { get; private set; }
     public string LicenseNumber { get; private set; }
     public bool IsActive { get; private set; }
+    public Guid SpecialityId { get; set; }
     public Speciality Speciality { get; private set; }
+
+    private Doctor() { }
 
     public Doctor(Guid id, string name, string licenseNumber, bool isActive, Speciality speciality)
     {
@@ -29,7 +32,7 @@ public class Doctor : BaseEntity
     {
         if (isActive is not null)
         {
-            IsActive = (bool) isActive;
+            IsActive = (bool)isActive;
         }
 
         if (licenseNumber is not null)
