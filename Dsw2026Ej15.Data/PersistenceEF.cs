@@ -1,5 +1,6 @@
 using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dsw2026Ej15.Data;
 
@@ -43,7 +44,7 @@ public class PersistenceEf : IPersistence
 
     public async Task<Doctor?> GetDoctor(Guid id)
     {
-        return _context.Doctors.SingleOrDefault(doctor => doctor.Id == id && doctor.IsActive);
+        return _context.Doctors.Include(doctor => doctor.Speciality).SingleOrDefault(doctor => doctor.Id == id && doctor.IsActive);
     }
 
     public async Task<Doctor?> GetDoctorByLicenseNumber(string licenseNumber)
@@ -53,7 +54,7 @@ public class PersistenceEf : IPersistence
 
     public async Task<IEnumerable<Doctor>> GetDoctors()
     {
-        return _context.Doctors.Where(doctor => doctor.IsActive);
+        return _context.Doctors.Include(doctor => doctor.Speciality).Where(doctor => doctor.IsActive);
     }
 
     public async Task<Speciality?> GetSpeciality(Guid id)

@@ -48,7 +48,14 @@ public class DoctorsController : ControllerBase
     {
         var doctors = await Persistence.GetDoctors();
 
-        return Ok(doctors);
+        var doctorsResult = new List<DoctorDTO.Response>();
+
+        foreach(var doctor in doctors)
+        {
+            doctorsResult.Add(new DoctorDTO.Response(doctor.Name, doctor.LicenseNumber, doctor.Speciality.Name));
+        }
+
+        return Ok(doctorsResult);
     }
 
     [HttpGet("{id}")]
